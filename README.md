@@ -43,6 +43,27 @@ npm test
 node demo.js
 ```
 
+### View Interactive Documentation
+```bash
+# Start the server first
+npm start
+
+# Then open documentation.html in your browser
+# Features an interactive timezone selector for all supported countries
+```
+
+## 🌐 Interactive Web Interface
+
+The project includes a beautiful interactive web interface in `documentation.html`:
+
+- **Country Selection**: Choose from US 🇺🇸, AU 🇦🇺, CA 🇨🇦, or VN 🇻🇳
+- **Location Selection**: Pick states, provinces, or cities within each country
+- **Live Time Display**: Real-time clock updates every second
+- **Timezone Information**: Shows UTC offset, DST status, and timezone ID
+- **Responsive Design**: Works on desktop and mobile devices
+
+Simply open `documentation.html` in your browser after starting the server to try it out!
+
 ## API Endpoints
 
 ### Get Current Time

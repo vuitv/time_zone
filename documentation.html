@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Zone Handler - US, AU & CA Support</title>
+    <title>Time Zone Handler - US, AU, CA & VN Support</title>
     <style>
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -106,11 +106,116 @@
         .online { background: #4CAF50; }
         .dst-active { background: #ff9800; }
         .no-dst { background: #9e9e9e; }
+        
+        /* Interactive Timezone Selector Styles */
+        .timezone-selector {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .selector-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .form-group select {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .form-group select:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        .timezone-result {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .timezone-result h3 {
+            margin: 0 0 15px 0;
+            color: #fff;
+        }
+        .time-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffeb3b;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .timezone-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .info-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .info-label {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            opacity: 0.7;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        @media (max-width: 768px) {
+            .selector-container {
+                grid-template-columns: 1fr;
+            }
+            .timezone-info {
+                grid-template-columns: 1fr;
+            }
+            .time-display {
+                font-size: 1.5em;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🌍 Time Zone Handler - Comprehensive US, AU & CA Time Zone Management</h1>
+        <h1>🌍 Time Zone Handler - Comprehensive US, AU, CA & VN Time Zone Management</h1>
         
         <div class="feature-list">
             <div class="feature">
@@ -124,6 +229,10 @@
             <div class="feature">
                 <h3>🇨🇦 Complete CA Coverage</h3>
                 <p>All Canadian timezones including NST, AST, EST_CA, CST_CA, MST_CA, PST_CA with DST support</p>
+            </div>
+            <div class="feature">
+                <h3>🇻🇳 Complete VN Coverage</h3>
+                <p>Vietnam timezone ICT (UTC+7) covering all 63+ provinces and cities</p>
             </div>
             <div class="feature">
                 <h3>⏰ Smart Conversions</h3>
@@ -152,6 +261,62 @@ node demo.js</code></pre>
             <strong>Server Status:</strong> 
             <span class="status-indicator online"></span>
             Running on http://localhost:3000
+        </div>
+
+        <h2>🕒 Interactive Timezone Selector</h2>
+        <div class="timezone-selector">
+            <h3 style="margin-top: 0; text-align: center;">🌏 Current Time Around the World</h3>
+            <p style="text-align: center; opacity: 0.9;">Select a country and location to see current time and timezone information</p>
+            
+            <div class="selector-container">
+                <div class="form-group">
+                    <label for="countrySelect">🌍 Select Country:</label>
+                    <select id="countrySelect">
+                        <option value="">Choose a country...</option>
+                        <option value="US">🇺🇸 United States</option>
+                        <option value="AU">🇦🇺 Australia</option>
+                        <option value="CA">🇨🇦 Canada</option>
+                        <option value="VN">🇻🇳 Vietnam</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="locationSelect">📍 Select State/Province/City:</label>
+                    <select id="locationSelect" disabled>
+                        <option value="">First select a country...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="timezoneResult" class="timezone-result" style="display: none;">
+                <h3 id="locationName">Location</h3>
+                <div class="time-display" id="currentTime">--:--:--</div>
+                <div class="timezone-info">
+                    <div class="info-item">
+                        <div class="info-label">Timezone</div>
+                        <div class="info-value" id="timezoneId">--</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">UTC Offset</div>
+                        <div class="info-value" id="utcOffset">--</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">DST Status</div>
+                        <div class="info-value" id="dstStatus">--</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Date</div>
+                        <div class="info-value" id="currentDate">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                🔄 Loading timezone information...
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                ❌ <span id="errorMessage">An error occurred</span>
+            </div>
         </div>
 
         <h2>📍 Supported Timezones</h2>
@@ -224,6 +389,25 @@ node demo.js</code></pre>
             </div>
         </div>
 
+        <h3>🇻🇳 Vietnam</h3>
+        <div class="timezone-grid">
+            <div class="timezone-card">
+                <h4>Indochina Time</h4>
+                <p><code>ICT</code> → Asia/Ho_Chi_Minh</p>
+                <small>Covers: All of Vietnam (UTC+7, No DST)</small>
+            </div>
+            <div class="timezone-card">
+                <h4>Vietnam Time</h4>
+                <p><code>VNT</code> → Asia/Ho_Chi_Minh</p>
+                <small>Alternative name for ICT</small>
+            </div>
+            <div class="timezone-card">
+                <h4>Saigon Time</h4>
+                <p><code>SGT</code> → Asia/Ho_Chi_Minh</p>
+                <small>Historical name (UTC+7, No DST)</small>
+            </div>
+        </div>
+
         <h2>🔌 API Endpoints</h2>
 
         <div class="endpoint">
@@ -266,11 +450,13 @@ node demo.js</code></pre>
         <div class="endpoint">
             <span class="method get">GET</span>
             <code>/api/timezone/region/:region</code>
-            <p>Get all timezones for a region (US or AU)</p>
+            <p>Get all timezones for a region (US, AU, CA, or VN)</p>
             <div class="example">
                 <strong>Examples:</strong><br>
                 • <code>curl http://localhost:3000/api/timezone/region/US</code><br>
-                • <code>curl http://localhost:3000/api/timezone/region/AU</code>
+                • <code>curl http://localhost:3000/api/timezone/region/AU</code><br>
+                • <code>curl http://localhost:3000/api/timezone/region/CA</code><br>
+                • <code>curl http://localhost:3000/api/timezone/region/VN</code>
             </div>
         </div>
 
@@ -281,7 +467,10 @@ node demo.js</code></pre>
             <div class="example">
                 <strong>Examples:</strong><br>
                 • <code>curl http://localhost:3000/api/timezone/state/US/California</code><br>
-                • <code>curl "http://localhost:3000/api/timezone/state/AU/New%20South%20Wales"</code>
+                • <code>curl "http://localhost:3000/api/timezone/state/AU/New%20South%20Wales"</code><br>
+                • <code>curl http://localhost:3000/api/timezone/state/CA/Ontario</code><br>
+                • <code>curl "http://localhost:3000/api/timezone/state/VN/Ho%20Chi%20Minh%20City"</code><br>
+                • <code>curl http://localhost:3000/api/timezone/state/VN/Hanoi</code>
             </div>
         </div>
 
@@ -478,9 +667,318 @@ npm test -- --coverage</code></pre>
         </div>
 
         <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
-            <p>Time Zone Handler - Complete US & AU Timezone Management System</p>
+            <p>Time Zone Handler - Complete US, AU, CA & VN Timezone Management System</p>
             <p>Built with moment-timezone for accurate DST handling and timezone conversions</p>
         </footer>
     </div>
+
+    <script>
+        // Location data for each country
+        const locationData = {
+            'US': {
+                'Alabama': 'Alabama',
+                'Alaska': 'Alaska', 
+                'Arizona': 'Arizona',
+                'Arkansas': 'Arkansas',
+                'California': 'California',
+                'Colorado': 'Colorado',
+                'Connecticut': 'Connecticut',
+                'Delaware': 'Delaware',
+                'Florida': 'Florida',
+                'Georgia': 'Georgia',
+                'Hawaii': 'Hawaii',
+                'Idaho': 'Idaho',
+                'Illinois': 'Illinois',
+                'Indiana': 'Indiana',
+                'Iowa': 'Iowa',
+                'Kansas': 'Kansas',
+                'Kentucky': 'Kentucky',
+                'Louisiana': 'Louisiana',
+                'Maine': 'Maine',
+                'Maryland': 'Maryland',
+                'Massachusetts': 'Massachusetts',
+                'Michigan': 'Michigan',
+                'Minnesota': 'Minnesota',
+                'Mississippi': 'Mississippi',
+                'Missouri': 'Missouri',
+                'Montana': 'Montana',
+                'Nebraska': 'Nebraska',
+                'Nevada': 'Nevada',
+                'New Hampshire': 'New Hampshire',
+                'New Jersey': 'New Jersey',
+                'New Mexico': 'New Mexico',
+                'New York': 'New York',
+                'North Carolina': 'North Carolina',
+                'North Dakota': 'North Dakota',
+                'Ohio': 'Ohio',
+                'Oklahoma': 'Oklahoma',
+                'Oregon': 'Oregon',
+                'Pennsylvania': 'Pennsylvania',
+                'Rhode Island': 'Rhode Island',
+                'South Carolina': 'South Carolina',
+                'South Dakota': 'South Dakota',
+                'Tennessee': 'Tennessee',
+                'Texas': 'Texas',
+                'Utah': 'Utah',
+                'Vermont': 'Vermont',
+                'Virginia': 'Virginia',
+                'Washington': 'Washington',
+                'West Virginia': 'West Virginia',
+                'Wisconsin': 'Wisconsin',
+                'Wyoming': 'Wyoming'
+            },
+            'AU': {
+                'New South Wales': 'New South Wales',
+                'Victoria': 'Victoria',
+                'Queensland': 'Queensland',
+                'Western Australia': 'Western Australia',
+                'South Australia': 'South Australia',
+                'Tasmania': 'Tasmania',
+                'Northern Territory': 'Northern Territory',
+                'Australian Capital Territory': 'Australian Capital Territory'
+            },
+            'CA': {
+                'Newfoundland and Labrador': 'Newfoundland and Labrador',
+                'Nova Scotia': 'Nova Scotia',
+                'New Brunswick': 'New Brunswick',
+                'Prince Edward Island': 'Prince Edward Island',
+                'Quebec': 'Quebec',
+                'Ontario': 'Ontario',
+                'Manitoba': 'Manitoba',
+                'Saskatchewan': 'Saskatchewan',
+                'Alberta': 'Alberta',
+                'British Columbia': 'British Columbia',
+                'Yukon': 'Yukon',
+                'Northwest Territories': 'Northwest Territories',
+                'Nunavut': 'Nunavut'
+            },
+            'VN': {
+                'Ho Chi Minh City': 'Ho Chi Minh City',
+                'Hanoi': 'Hanoi',
+                'Da Nang': 'Da Nang',
+                'Hai Phong': 'Hai Phong',
+                'Can Tho': 'Can Tho',
+                'Bien Hoa': 'Bien Hoa',
+                'Hue': 'Hue',
+                'Nha Trang': 'Nha Trang',
+                'Buon Ma Thuot': 'Buon Ma Thuot',
+                'Quy Nhon': 'Quy Nhon',
+                'Vung Tau': 'Vung Tau',
+                'Nam Dinh': 'Nam Dinh',
+                'Phan Thiet': 'Phan Thiet',
+                'Long Xuyen': 'Long Xuyen',
+                'Ha Long': 'Ha Long',
+                'Thai Nguyen': 'Thai Nguyen',
+                'Thanh Hoa': 'Thanh Hoa',
+                'Rach Gia': 'Rach Gia',
+                'Cam Ranh': 'Cam Ranh',
+                'Vinh': 'Vinh',
+                'My Tho': 'My Tho',
+                'Da Lat': 'Da Lat',
+                'Bac Lieu': 'Bac Lieu',
+                'Hai Duong': 'Hai Duong',
+                'Hung Yen': 'Hung Yen',
+                'Vinh Phuc': 'Vinh Phuc',
+                'Bac Ninh': 'Bac Ninh',
+                'Quang Ninh': 'Quang Ninh',
+                'Lang Son': 'Lang Son',
+                'Cao Bang': 'Cao Bang',
+                'Ha Giang': 'Ha Giang',
+                'Lao Cai': 'Lao Cai'
+            }
+        };
+
+        // DOM elements
+        const countrySelect = document.getElementById('countrySelect');
+        const locationSelect = document.getElementById('locationSelect');
+        const timezoneResult = document.getElementById('timezoneResult');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Update interval for live time
+        let timeUpdateInterval;
+
+        // Event listeners
+        countrySelect.addEventListener('change', handleCountryChange);
+        locationSelect.addEventListener('change', handleLocationChange);
+
+        function handleCountryChange() {
+            const selectedCountry = countrySelect.value;
+            
+            // Reset location selector
+            locationSelect.innerHTML = '<option value="">Choose a location...</option>';
+            locationSelect.disabled = !selectedCountry;
+            
+            // Hide result
+            timezoneResult.style.display = 'none';
+            clearInterval(timeUpdateInterval);
+            
+            if (selectedCountry && locationData[selectedCountry]) {
+                // Populate locations
+                const locations = locationData[selectedCountry];
+                Object.keys(locations).forEach(location => {
+                    const option = document.createElement('option');
+                    option.value = location;
+                    option.textContent = location;
+                    locationSelect.appendChild(option);
+                });
+            }
+        }
+
+        function handleLocationChange() {
+            const selectedCountry = countrySelect.value;
+            const selectedLocation = locationSelect.value;
+            
+            if (selectedCountry && selectedLocation) {
+                fetchTimezoneInfo(selectedCountry, selectedLocation);
+            } else {
+                timezoneResult.style.display = 'none';
+                clearInterval(timeUpdateInterval);
+            }
+        }
+
+        async function fetchTimezoneInfo(country, location) {
+            showLoading();
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/timezone/state/${country}/${encodeURIComponent(location)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayTimezoneInfo(data.data);
+                } else {
+                    throw new Error(data.error || 'Unknown error occurred');
+                }
+            } catch (err) {
+                if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                    showError('⚠️ Server not running! Please start the server with "npm start" and try again.');
+                } else {
+                    showError(`Failed to fetch timezone information: ${err.message}`);
+                }
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayTimezoneInfo(data) {
+            const { state, region, timezone, currentTime } = data;
+            
+            // Update UI elements
+            document.getElementById('locationName').textContent = `${state}, ${getCountryName(region)}`;
+            document.getElementById('timezoneId').textContent = timezone;
+            
+            // Format UTC offset
+            const offsetMinutes = currentTime.offset;
+            const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+            const offsetMins = Math.abs(offsetMinutes) % 60;
+            const offsetSign = offsetMinutes >= 0 ? '+' : '-';
+            const offsetString = `UTC${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMins.toString().padStart(2, '0')}`;
+            
+            document.getElementById('utcOffset').textContent = offsetString;
+            document.getElementById('dstStatus').textContent = currentTime.isDST ? '🌞 Active' : '🌙 Inactive';
+            
+            // Show result
+            timezoneResult.style.display = 'block';
+            
+            // Start live time updates
+            updateCurrentTime(currentTime);
+            timeUpdateInterval = setInterval(() => {
+                updateLiveTime(timezone);
+            }, 1000);
+        }
+
+        function updateCurrentTime(timeData) {
+            // Extract time components from the timezone-specific ISO string
+            const isoString = timeData.localTime; // e.g., "2025-07-09T13:39:31+07:00"
+            
+            // Parse the time components directly from the ISO string
+            const timeMatch = isoString.match(/T(\d{2}):(\d{2}):(\d{2})/);
+            const dateMatch = isoString.match(/(\d{4})-(\d{2})-(\d{2})/);
+            
+            if (timeMatch && dateMatch) {
+                const [, hours, minutes, seconds] = timeMatch;
+                const [, year, month, day] = dateMatch;
+                
+                // Display the time directly from the timezone
+                document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds}`;
+                
+                // Create a date object for formatting the date part
+                const dateObj = new Date(year, month - 1, day);
+                document.getElementById('currentDate').textContent = formatDate(dateObj);
+            }
+        }
+
+        async function updateLiveTime(timezone) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/timezone/current/${encodeURIComponent(timezone)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        updateCurrentTime(data.data);
+                    }
+                }
+            } catch (err) {
+                // Silently handle errors for live updates
+                console.warn('Failed to update live time:', err);
+            }
+        }
+
+        function formatTime(date) {
+            // This function is no longer used for live updates but kept for compatibility
+            return date.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        function formatDate(date) {
+            // Format date using the date object (year, month, day only)
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function getCountryName(code) {
+            const countries = {
+                'US': 'United States',
+                'AU': 'Australia', 
+                'CA': 'Canada',
+                'VN': 'Vietnam'
+            };
+            return countries[code] || code;
+        }
+
+        function showLoading() {
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            timezoneResult.style.display = 'none';
+        }
+
+        function hideLoading() {
+            loading.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            error.style.display = 'block';
+            timezoneResult.style.display = 'none';
+        }
+
+        // Clean up interval when page unloads
+        window.addEventListener('beforeunload', () => {
+            clearInterval(timeUpdateInterval);
+        });
+    </script>
 </body>
 </html>
