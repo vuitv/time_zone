@@ -22,7 +22,7 @@ app.get('/health', (req, res) => {
     status: 'OK', 
     message: 'Time Zone Service is running',
     timestamp: moment().format(),
-    supportedRegions: ['US', 'AU']
+    supportedRegions: ['US', 'AU', 'CA', 'VN']
   });
 });
 

@@ -1,7 +1,7 @@
 {
   "name": "time-zone-handler",
   "version": "1.0.0",
-  "description": "Comprehensive time zone handling for US and AU regions",
+  "description": "Comprehensive time zone handling for US, AU, CA, and VN regions",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -9,7 +9,7 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "keywords": ["timezone", "US", "AU", "datetime", "conversion"],
+  "keywords": ["timezone", "US", "AU", "CA", "VN", "datetime", "conversion", "DST"],
   "author": "",
   "license": "MIT",
   "dependencies": {

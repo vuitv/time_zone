@@ -55,7 +55,7 @@ router.post('/convert', (req, res) => {
 
 /**
  * GET /api/timezone/region/:region
- * Get all timezones for a region (US or AU)
+ * Get all timezones for a region (US, AU, CA, or VN)
  */
 router.get('/region/:region', (req, res) => {
   try {

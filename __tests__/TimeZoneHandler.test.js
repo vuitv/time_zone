@@ -33,10 +33,30 @@ describe('TimeZoneHandler', () => {
       expect(result.timezone).toBe('America/Los_Angeles');
     });
 
+    test('should resolve CA timezone abbreviation', () => {
+      const result = timeZoneHandler.getCurrentTime('EST_CA');
+      
+      expect(result.timezone).toBe('America/Toronto');
+    });
+
     test('should throw error for invalid timezone', () => {
       expect(() => {
         timeZoneHandler.getCurrentTime('Invalid/Timezone');
       }).toThrow('Invalid timezone');
+    });
+
+    test('should get current time for VN timezone', () => {
+      const result = timeZoneHandler.getCurrentTime('Asia/Ho_Chi_Minh');
+      
+      expect(result).toHaveProperty('timezone', 'Asia/Ho_Chi_Minh');
+      expect(result).toHaveProperty('localTime');
+      expect(result).toHaveProperty('utcTime');
+    });
+
+    test('should resolve VN timezone abbreviation', () => {
+      const result = timeZoneHandler.getCurrentTime('ICT');
+      
+      expect(result.timezone).toBe('Asia/Ho_Chi_Minh');
     });
   });
 
@@ -75,6 +95,17 @@ describe('TimeZoneHandler', () => {
       
       expect(result).toHaveProperty('timeDifference');
     });
+
+    test('should convert time between VN and US timezones', () => {
+      const result = timeZoneHandler.convertTime(
+        '2024-07-15 15:00:00',
+        'Asia/Ho_Chi_Minh',
+        'America/New_York'
+      );
+      
+      expect(result.source.timezone).toBe('Asia/Ho_Chi_Minh');
+      expect(result.target.timezone).toBe('America/New_York');
+    });
   });
 
   describe('getRegionTimezones', () => {
@@ -93,6 +124,24 @@ describe('TimeZoneHandler', () => {
       
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
+    });
+
+    test('should get CA timezones', () => {
+      const result = timeZoneHandler.getRegionTimezones('CA');
+      
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
+      expect(result[0]).toHaveProperty('abbreviation');
+      expect(result[0]).toHaveProperty('timezone');
+    });
+
+    test('should get VN region timezones', () => {
+      const result = timeZoneHandler.getRegionTimezones('VN');
+      
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
+      expect(result[0]).toHaveProperty('abbreviation');
+      expect(result[0]).toHaveProperty('timezone');
     });
 
     test('should throw error for invalid region', () => {
@@ -120,10 +169,37 @@ describe('TimeZoneHandler', () => {
       expect(result.timezone).toBe('Australia/Sydney');
     });
 
+    test('should get timezone for CA province', () => {
+      const result = timeZoneHandler.getTimezoneByState('Ontario', 'CA');
+      
+      expect(result.state).toBe('Ontario');
+      expect(result.region).toBe('CA');
+      expect(result.timezone).toBe('America/Toronto');
+      expect(result).toHaveProperty('currentTime');
+    });
+
+    test('should get timezone for VN city', () => {
+      const result = timeZoneHandler.getTimezoneByState('Ho Chi Minh City', 'VN');
+      
+      expect(result.state).toBe('Ho Chi Minh City');
+      expect(result.region).toBe('VN');
+      expect(result.timezone).toBe('Asia/Ho_Chi_Minh');
+      expect(result).toHaveProperty('currentTime');
+    });
+
+    test('should get timezone for VN capital', () => {
+      const result = timeZoneHandler.getTimezoneByState('Hanoi', 'VN');
+      
+      expect(result.state).toBe('Hanoi');
+      expect(result.region).toBe('VN');
+      expect(result.timezone).toBe('Asia/Ho_Chi_Minh');
+      expect(result).toHaveProperty('currentTime');
+    });
+
     test('should throw error for invalid state', () => {
       expect(() => {
         timeZoneHandler.getTimezoneByState('Invalid State', 'US');
-      }).toThrow('State/Territory not found');
+      }).toThrow('State/Territory/Province/City not found');
     });
   });
 

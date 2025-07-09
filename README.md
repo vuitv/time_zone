@@ -1,12 +1,14 @@
 # Time Zone Handler
 
-Comprehensive time zone handling system for US and AU regions with full DST support, business hours calculation, and timezone conversions.
+Comprehensive time zone handling system for US, AU, CA, and VN regions with full DST support, business hours calculation, and timezone conversions.
 
 ## Features
 
 - ✅ Complete US timezone support (EST, CST, MST, PST, AKST, HST + DST variants)
 - ✅ Complete AU timezone support (AEST, ACST, AWST + DST variants)
-- ✅ State/Territory to timezone mapping
+- ✅ Complete CA timezone support (NST, AST, EST, CST, MST, PST + DST variants)
+- ✅ Complete VN timezone support (ICT, VNT, SGT - Indochina Time UTC+7)
+- ✅ State/Territory/Province/City to timezone mapping
 - ✅ DST (Daylight Saving Time) detection and transitions
 - ✅ Business hours calculation
 - ✅ Time conversion between any timezones
@@ -71,6 +73,7 @@ GET /api/timezone/region/:region
 Examples:
 - `/api/timezone/region/US`
 - `/api/timezone/region/AU`
+- `/api/timezone/region/CA`
 
 ### Get Timezone by State
 ```
@@ -79,6 +82,9 @@ GET /api/timezone/state/:region/:state
 Examples:
 - `/api/timezone/state/US/California`
 - `/api/timezone/state/AU/New%20South%20Wales`
+- `/api/timezone/state/CA/Ontario`
+- `/api/timezone/state/VN/Ho%20Chi%20Minh%20City`
+- `/api/timezone/state/VN/Hanoi`
 
 ### Get DST Information
 ```
@@ -142,6 +148,19 @@ Content-Type: application/json
 - **ACST_NT**: Northern Territory Time (Australia/Darwin) - No DST
 - **LHST/LHDT**: Lord Howe Standard/Daylight Time (Australia/Lord_Howe)
 
+### CA Timezones (Canada)
+- **NST/NDT**: Newfoundland Standard/Daylight Time (America/St_Johns)
+- **AST/ADT**: Atlantic Standard/Daylight Time (America/Halifax)
+- **EST_CA/EDT_CA**: Eastern Standard/Daylight Time (America/Toronto)
+- **CST_CA/CDT_CA**: Central Standard/Daylight Time (America/Winnipeg)
+- **MST_CA/MDT_CA**: Mountain Standard/Daylight Time (America/Edmonton)
+- **PST_CA/PDT_CA**: Pacific Standard/Daylight Time (America/Vancouver)
+
+### VN Timezones (Vietnam)
+- **ICT**: Indochina Time (Asia/Ho_Chi_Minh) - UTC+7, No DST
+- **VNT**: Vietnam Time (Asia/Ho_Chi_Minh) - UTC+7, No DST  
+- **SGT**: Saigon Time (Asia/Ho_Chi_Minh) - UTC+7, No DST (Historical)
+
 ### US States Coverage
 All 50 US states are mapped to their respective timezones, including special cases like Arizona (no DST) and states spanning multiple time zones.
 
@@ -155,6 +174,33 @@ All Australian states and territories are covered:
 - Tasmania → Australia/Hobart
 - Northern Territory → Australia/Darwin
 - Australian Capital Territory → Australia/Sydney
+
+### CA Provinces/Territories Coverage
+All Canadian provinces and territories are covered:
+- Ontario → America/Toronto
+- Quebec → America/Toronto
+- British Columbia → America/Vancouver
+- Alberta → America/Edmonton
+- Manitoba → America/Winnipeg
+- Saskatchewan → America/Regina
+- Nova Scotia → America/Halifax
+- New Brunswick → America/Halifax
+- Prince Edward Island → America/Halifax
+- Newfoundland and Labrador → America/St_Johns
+- Yukon → America/Whitehorse
+- Northwest Territories → America/Yellowknife
+- Nunavut → America/Iqaluit
+
+### VN Provinces/Cities Coverage  
+All 63 Vietnamese provinces and major cities are covered:
+- Ho Chi Minh City → Asia/Ho_Chi_Minh
+- Hanoi → Asia/Ho_Chi_Minh
+- Da Nang → Asia/Ho_Chi_Minh
+- Hai Phong → Asia/Ho_Chi_Minh
+- Can Tho → Asia/Ho_Chi_Minh
+- And 58+ other provinces/cities → Asia/Ho_Chi_Minh
+
+*Note: Vietnam uses a single timezone (UTC+7) for the entire country.*
 
 ## Code Examples
 

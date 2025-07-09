@@ -1,7 +1,7 @@
 const moment = require('moment-timezone');
 
 /**
- * Comprehensive Time Zone Handler for US and AU regions
+ * Comprehensive Time Zone Handler for US, AU, CA, and VN regions
  * Handles all major time zones, DST transitions, and conversions
  */
 class TimeZoneHandler {
@@ -35,10 +35,35 @@ class TimeZoneHandler {
       'LHDT': 'Australia/Lord_Howe'   // Lord Howe Daylight Time
     };
 
+    // CA Time Zones (Canada)
+    this.CA_TIMEZONES = {
+      'NST': 'America/St_Johns',      // Newfoundland Standard Time
+      'NDT': 'America/St_Johns',      // Newfoundland Daylight Time
+      'AST': 'America/Halifax',       // Atlantic Standard Time
+      'ADT': 'America/Halifax',       // Atlantic Daylight Time
+      'EST_CA': 'America/Toronto',    // Eastern Standard Time (Canada)
+      'EDT_CA': 'America/Toronto',    // Eastern Daylight Time (Canada)
+      'CST_CA': 'America/Winnipeg',   // Central Standard Time (Canada)
+      'CDT_CA': 'America/Winnipeg',   // Central Daylight Time (Canada)
+      'MST_CA': 'America/Edmonton',   // Mountain Standard Time (Canada)
+      'MDT_CA': 'America/Edmonton',   // Mountain Daylight Time (Canada)
+      'PST_CA': 'America/Vancouver',  // Pacific Standard Time (Canada)
+      'PDT_CA': 'America/Vancouver'   // Pacific Daylight Time (Canada)
+    };
+
+    // VN Time Zones (Vietnam)
+    this.VN_TIMEZONES = {
+      'ICT': 'Asia/Ho_Chi_Minh',      // Indochina Time (UTC+7)
+      'VNT': 'Asia/Ho_Chi_Minh',      // Vietnam Time (UTC+7)
+      'SGT': 'Asia/Ho_Chi_Minh'       // Saigon Time (historical, UTC+7)
+    };
+
     // Combined timezone mapping
     this.TIMEZONE_MAP = {
       ...this.US_TIMEZONES,
-      ...this.AU_TIMEZONES
+      ...this.AU_TIMEZONES,
+      ...this.CA_TIMEZONES,
+      ...this.VN_TIMEZONES
     };
 
     // US States to timezone mapping
@@ -106,6 +131,107 @@ class TimeZoneHandler {
       'Northern Territory': 'Australia/Darwin',
       'Australian Capital Territory': 'Australia/Sydney'
     };
+
+    // CA Provinces/Territories to timezone mapping
+    this.CA_PROVINCES_TIMEZONE = {
+      'Newfoundland and Labrador': 'America/St_Johns',
+      'Nova Scotia': 'America/Halifax',
+      'New Brunswick': 'America/Halifax',
+      'Prince Edward Island': 'America/Halifax',
+      'Quebec': 'America/Toronto',
+      'Ontario': 'America/Toronto',
+      'Manitoba': 'America/Winnipeg',
+      'Saskatchewan': 'America/Regina',
+      'Alberta': 'America/Edmonton',
+      'British Columbia': 'America/Vancouver',
+      'Yukon': 'America/Whitehorse',
+      'Northwest Territories': 'America/Yellowknife',
+      'Nunavut': 'America/Iqaluit'
+    };
+
+    // VN Provinces/Cities to timezone mapping
+    this.VN_PROVINCES_TIMEZONE = {
+      // Major cities
+      'Ho Chi Minh City': 'Asia/Ho_Chi_Minh',
+      'Hanoi': 'Asia/Ho_Chi_Minh',
+      'Da Nang': 'Asia/Ho_Chi_Minh',
+      'Hai Phong': 'Asia/Ho_Chi_Minh',
+      'Can Tho': 'Asia/Ho_Chi_Minh',
+      'Bien Hoa': 'Asia/Ho_Chi_Minh',
+      'Hue': 'Asia/Ho_Chi_Minh',
+      'Nha Trang': 'Asia/Ho_Chi_Minh',
+      'Buon Ma Thuot': 'Asia/Ho_Chi_Minh',
+      'Quy Nhon': 'Asia/Ho_Chi_Minh',
+      'Vung Tau': 'Asia/Ho_Chi_Minh',
+      'Nam Dinh': 'Asia/Ho_Chi_Minh',
+      'Phan Thiet': 'Asia/Ho_Chi_Minh',
+      'Long Xuyen': 'Asia/Ho_Chi_Minh',
+      'Ha Long': 'Asia/Ho_Chi_Minh',
+      'Thai Nguyen': 'Asia/Ho_Chi_Minh',
+      'Thanh Hoa': 'Asia/Ho_Chi_Minh',
+      'Rach Gia': 'Asia/Ho_Chi_Minh',
+      'Cam Ranh': 'Asia/Ho_Chi_Minh',
+      'Vinh': 'Asia/Ho_Chi_Minh',
+      'My Tho': 'Asia/Ho_Chi_Minh',
+      'Da Lat': 'Asia/Ho_Chi_Minh',
+      'Bac Lieu': 'Asia/Ho_Chi_Minh',
+      
+      // Additional provinces/cities
+      'Hai Duong': 'Asia/Ho_Chi_Minh',
+      'Hung Yen': 'Asia/Ho_Chi_Minh',
+      'Vinh Phuc': 'Asia/Ho_Chi_Minh',
+      'Bac Ninh': 'Asia/Ho_Chi_Minh',
+      'Quang Ninh': 'Asia/Ho_Chi_Minh',
+      'Lang Son': 'Asia/Ho_Chi_Minh',
+      'Cao Bang': 'Asia/Ho_Chi_Minh',
+      'Ha Giang': 'Asia/Ho_Chi_Minh',
+      'Lao Cai': 'Asia/Ho_Chi_Minh',
+      'Yen Bai': 'Asia/Ho_Chi_Minh',
+      'Tuyen Quang': 'Asia/Ho_Chi_Minh',
+      'Phu Tho': 'Asia/Ho_Chi_Minh',
+      'Bac Giang': 'Asia/Ho_Chi_Minh',
+      'Bac Kan': 'Asia/Ho_Chi_Minh',
+      'Dien Bien': 'Asia/Ho_Chi_Minh',
+      'Lai Chau': 'Asia/Ho_Chi_Minh',
+      'Son La': 'Asia/Ho_Chi_Minh',
+      'Hoa Binh': 'Asia/Ho_Chi_Minh',
+      'Ha Nam': 'Asia/Ho_Chi_Minh',
+      'Thai Binh': 'Asia/Ho_Chi_Minh',
+      'Ninh Binh': 'Asia/Ho_Chi_Minh',
+      'Nghe An': 'Asia/Ho_Chi_Minh',
+      'Ha Tinh': 'Asia/Ho_Chi_Minh',
+      'Quang Binh': 'Asia/Ho_Chi_Minh',
+      'Quang Tri': 'Asia/Ho_Chi_Minh',
+      'Thua Thien Hue': 'Asia/Ho_Chi_Minh',
+      'Quang Nam': 'Asia/Ho_Chi_Minh',
+      'Quang Ngai': 'Asia/Ho_Chi_Minh',
+      'Binh Dinh': 'Asia/Ho_Chi_Minh',
+      'Phu Yen': 'Asia/Ho_Chi_Minh',
+      'Khanh Hoa': 'Asia/Ho_Chi_Minh',
+      'Ninh Thuan': 'Asia/Ho_Chi_Minh',
+      'Binh Thuan': 'Asia/Ho_Chi_Minh',
+      'Kon Tum': 'Asia/Ho_Chi_Minh',
+      'Gia Lai': 'Asia/Ho_Chi_Minh',
+      'Dak Lak': 'Asia/Ho_Chi_Minh',
+      'Dak Nong': 'Asia/Ho_Chi_Minh',
+      'Lam Dong': 'Asia/Ho_Chi_Minh',
+      'Binh Phuoc': 'Asia/Ho_Chi_Minh',
+      'Tay Ninh': 'Asia/Ho_Chi_Minh',
+      'Binh Duong': 'Asia/Ho_Chi_Minh',
+      'Dong Nai': 'Asia/Ho_Chi_Minh',
+      'Ba Ria Vung Tau': 'Asia/Ho_Chi_Minh',
+      'Long An': 'Asia/Ho_Chi_Minh',
+      'Tien Giang': 'Asia/Ho_Chi_Minh',
+      'Ben Tre': 'Asia/Ho_Chi_Minh',
+      'Tra Vinh': 'Asia/Ho_Chi_Minh',
+      'Vinh Long': 'Asia/Ho_Chi_Minh',
+      'Dong Thap': 'Asia/Ho_Chi_Minh',
+      'An Giang': 'Asia/Ho_Chi_Minh',
+      'Kien Giang': 'Asia/Ho_Chi_Minh',
+      'Ca Mau': 'Asia/Ho_Chi_Minh',
+      'Hau Giang': 'Asia/Ho_Chi_Minh',
+      'Soc Trang': 'Asia/Ho_Chi_Minh'
+    };
   }
 
   /**
@@ -121,10 +247,10 @@ class TimeZoneHandler {
       return {
         timezone: tz,
         localTime: now.format(),
-        utcTime: now.utc().format(),
+        utcTime: now.clone().utc().format(),
         timestamp: now.valueOf(),
         isDST: now.isDST(),
-        offset: now.format('Z'),
+        offset: now.utcOffset(), // Returns offset in minutes as integer
         abbreviation: now.format('z')
       };
     } catch (error) {
@@ -158,13 +284,13 @@ class TimeZoneHandler {
         source: {
           timezone: fromTz,
           time: sourceMoment.format(),
-          offset: sourceMoment.format('Z'),
+          offset: sourceMoment.utcOffset(), // Returns offset in minutes as integer
           isDST: sourceMoment.isDST()
         },
         target: {
           timezone: toTz,
           time: targetMoment.format(),
-          offset: targetMoment.format('Z'),
+          offset: targetMoment.utcOffset(), // Returns offset in minutes as integer
           isDST: targetMoment.isDST()
         },
         timeDifference: targetMoment.valueOf() - sourceMoment.valueOf()
@@ -176,52 +302,57 @@ class TimeZoneHandler {
 
   /**
    * Get all timezones for a specific region
-   * @param {string} region - Region code (US or AU)
+   * @param {string} region - Region code (US, AU, CA, or VN)
    * @returns {Array} Array of timezone information
    */
   getRegionTimezones(region) {
     const regionUpper = region.toUpperCase();
-    let timezones = [];
     
-    if (regionUpper === 'US') {
-      timezones = Object.keys(this.US_TIMEZONES).map(abbr => ({
-        abbreviation: abbr,
-        timezone: this.US_TIMEZONES[abbr],
-        currentTime: this.getCurrentTime(this.US_TIMEZONES[abbr])
-      }));
-    } else if (regionUpper === 'AU') {
-      timezones = Object.keys(this.AU_TIMEZONES).map(abbr => ({
-        abbreviation: abbr,
-        timezone: this.AU_TIMEZONES[abbr],
-        currentTime: this.getCurrentTime(this.AU_TIMEZONES[abbr])
-      }));
-    } else {
-      throw new Error('Unsupported region. Use US or AU.');
+    // Map region to timezone collection
+    const regionTimezoneMap = {
+      'US': this.US_TIMEZONES,
+      'AU': this.AU_TIMEZONES,
+      'CA': this.CA_TIMEZONES,
+      'VN': this.VN_TIMEZONES
+    };
+    
+    const timezoneCollection = regionTimezoneMap[regionUpper];
+    if (!timezoneCollection) {
+      throw new Error('Unsupported region. Use US, AU, CA, or VN.');
     }
     
-    return timezones;
+    return Object.keys(timezoneCollection).map(abbr => ({
+      abbreviation: abbr,
+      timezone: timezoneCollection[abbr],
+      currentTime: this.getCurrentTime(timezoneCollection[abbr])
+    }));
   }
 
   /**
-   * Get timezone by state/territory
-   * @param {string} state - State or territory name
-   * @param {string} region - Region code (US or AU)
+   * Get timezone by state/territory/province/city
+   * @param {string} state - State, territory, province, or city name
+   * @param {string} region - Region code (US, AU, CA, or VN)
    * @returns {Object} Timezone information
    */
   getTimezoneByState(state, region) {
     const regionUpper = region.toUpperCase();
-    let timezone;
     
-    if (regionUpper === 'US') {
-      timezone = this.US_STATES_TIMEZONE[state];
-    } else if (regionUpper === 'AU') {
-      timezone = this.AU_STATES_TIMEZONE[state];
-    } else {
-      throw new Error('Unsupported region. Use US or AU.');
+    // Map region to state/province/city collection
+    const regionStateMap = {
+      'US': this.US_STATES_TIMEZONE,
+      'AU': this.AU_STATES_TIMEZONE,
+      'CA': this.CA_PROVINCES_TIMEZONE,
+      'VN': this.VN_PROVINCES_TIMEZONE
+    };
+    
+    const stateCollection = regionStateMap[regionUpper];
+    if (!stateCollection) {
+      throw new Error('Unsupported region. Use US, AU, CA, or VN.');
     }
     
+    const timezone = stateCollection[state];
     if (!timezone) {
-      throw new Error(`State/Territory not found: ${state}`);
+      throw new Error(`State/Territory/Province/City not found: ${state}`);
     }
     
     return {
@@ -393,6 +524,20 @@ class TimeZoneHandler {
         totalMinutes: duration.asMinutes()
       }
     };
+  }
+
+  /**
+   * Format offset from minutes to human-readable string
+   * @param {number} offsetMinutes - Offset in minutes
+   * @returns {string} Formatted offset string (e.g., "+10:00", "-05:00")
+   */
+  formatOffset(offsetMinutes) {
+    const sign = offsetMinutes >= 0 ? '+' : '-';
+    const absMinutes = Math.abs(offsetMinutes);
+    const hours = Math.floor(absMinutes / 60);
+    const minutes = absMinutes % 60;
+    
+    return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   }
 }
 
